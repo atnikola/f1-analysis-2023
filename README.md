@@ -4,7 +4,7 @@
 _October 2023_
 
 - [Introduction](#introduction)
-- [Visualization & Exploratory Analysis](#Exploratory)
+- [Visualizations](#Visualizations)
 - [Redbull](#Redbull)
 - [Classification](#Classification)
 
@@ -69,7 +69,7 @@ plt.style.use('dark_background')
 colormap = plt.cm.get_cmap('coolwarm')
 ```
 
-## [Visualization & Exploratory Analysis](#Exploratory)
+## [Visualizations](#Visualizations)
 
 ```python
 merged_data = pd.merge(constructor_standings, constructors, on='constructorId')
