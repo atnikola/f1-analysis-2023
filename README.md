@@ -51,7 +51,7 @@ Combine:
 import os
 import pandas as pd
 
-folder_path = "/Users/andreas.nikolaidis/Documents/DSML/Python/Projects/FunProjects/F1/csv_files"
+folder_path = "/Users/~/csv_files"
 dataset = {}
 
 for file_name in os.listdir(folder_path):
