@@ -95,7 +95,7 @@ plt.yticks(color='white')
 
 plt.show()
 ```
-![db84b0a7-d708-45fb-bbef-ff1a17044c45](https://github.com/atnikola/f1-analysis-2023/assets/38530617/e83fb3ef-bf8e-48b0-9964-95e1d2caa2ff)
+![d81e7c44-0771-4cab-9b03-14fdd12baaf0](https://github.com/atnikola/f1-analysis-2023/assets/38530617/78f0cf89-0042-42a0-a1c4-a73b5dac95e4)
 
 ```python
 # Set a dark background style
