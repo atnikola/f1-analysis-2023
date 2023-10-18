@@ -4,16 +4,12 @@
 _October 2023_
 
 - [Introduction](#introduction)
-- [Exploratory Analysis](#exploratory_analysis)
-- [Correlations & Descriptive Statistics](#descriptive)
-- [Principal Component Analysis (PCA)](#pca)
-- [Cross Validation & Regression Analysis](#cv-ra)
-- [Conclusion](#conclusion)
+- [Redbull](#Redbull)
 
 ## [Introduction](#introduction)
 In this notebook, we will look at the historical performance of drivers and constructors and compare the years.
 
-## [Exploratory Analysis](#exploratory_analysis)
+## [Redbull](#Redbull)
 Start by importing all the necessary packages into Python:
 ```python
 import numpy as np
@@ -183,7 +179,118 @@ plt.show()
 ```
 ![0aa8f73e-ab22-42cc-acef-187ce5a2cc32](https://github.com/atnikola/f1-analysis-2023/assets/38530617/b4d6dad5-f3c2-4e90-994f-441d718b6dab)
 
+Now let's take a look at the 'best' drivers for RedBull according to podium appearances:
+```python
+driverStandingDf = dataset['results_df'][(dataset['results_df']['constructorId'] == constructorId) &(dataset['results_df']['positionOrder'] <= 3)]
+driverStandingDf.head(10)
+```
 
+```python
+driverIdsAndNoOfPodiums = {}
+def getDriverNameFromId(driverId):
+    filtered_df = dataset['drivers_df'][(dataset['drivers_df']['driverId'] == driverId)][['forename','surname']]
+    full_name = filtered_df['forename'] + " " + filtered_df['surname']
+    return full_name.values[0]
+for index, row in driverStandingDf.iterrows():
+    try:
+        driverIdsAndNoOfPodiums[row['driverId']] +=1
+    except:
+        driverIdsAndNoOfPodiums[row['driverId']] =1
+driverIdsAndNoOfPodiums = dict(sorted(driverIdsAndNoOfPodiums.items(), key=lambda item: item[1], reverse=True))
+names_ = [getDriverNameFromId(driverId) for driverId in driverIdsAndNoOfPodiums.keys()]
+podiums_ = list(driverIdsAndNoOfPodiums.values())
+print(driverIdsAndNoOfPodiums)
+max_verstappen_driverId = 830
+```
+
+```python
+# Create a horizontal bar chart
+plt.barh(names_, podiums_)
+
+# Add labels and title
+plt.xlabel('Number of Podiums')
+plt.ylabel('Driver Names')
+plt.title('Number of Podiums by Driver')
+
+# Show the plot
+plt.show()
+
+print(f"Top 3 Drivers of RedBull : ")
+for i in range(3):
+    print(f"{names_[i]} have {podiums_[i]} podiums")
+```
+![4c8712a5-c015-472d-8c4b-3094dd57b286](https://github.com/atnikola/f1-analysis-2023/assets/38530617/a941d4d9-9650-4697-b665-792c28cc54cc)
+
+Top 3 Drivers of RedBull : 
+Max Verstappen have 89 podiums
+Sebastian Vettel have 65 podiums
+Mark Webber have 41 podiums
+
+
+
+
+
+
+
+
+Next I want to create a simple dashboard that allows us to select a race and have it display the fastest lap times every year next to a box plot of the full range. 
+```python
+from ipywidgets import interact, widgets
+import matplotlib.gridspec as gridspec
+import numpy as np
+
+circuits = fastest_laptime_years_circuits.keys()
+
+def plot_graph(circuit):
+    circuit_data = fastest_laptime_years_circuits[circuit]
+    years_ = list(circuit_data.keys())
+    fastest_lap_ = list(circuit_data.values())
+    
+    colors = np.linspace(0, 1, len(years_))
+
+    # Create a grid with 1 row and 2 columns for both plots
+    fig = plt.figure(figsize=(14, 6))
+    gs = gridspec.GridSpec(1, 2, width_ratios=[2, 1])
+
+    # Line plot
+    ax1 = plt.subplot(gs[0])
+    ax1.set_xticks(years_)
+    ax1.set_xticklabels(years_, rotation=45, ha='right')
+    ax1.set_xlabel('Years')
+    ax1.set_ylabel('Fastest Lap Timing')
+    ax1.set_title(f'{circuit} Yearly Fastest Lap Timing')
+
+    for i in range(len(years_) - 1):
+        ax1.plot([years_[i], years_[i + 1]], [fastest_lap_[i], fastest_lap_[i + 1]], color=colormap(colors[i % len(colors)]),
+                 label='Red Bull Racing')
+    # Box plot
+    ax2 = plt.subplot(gs[1])
+    ax2.boxplot(fastest_lap_, vert=True)
+    ax2.set_yticklabels([])
+    ax2.set_xlabel('Fastest Lap Timing')
+    ax2.set_title(f'{circuit} Fastest Lap Timing Box Plot')
+
+    plt.show()
+    
+    range_of_years = (min(years_), max(years_))
+    faster_or_slower = fastest_lap_[-1] - fastest_lap_[0]
+    faster_or_slower_word = ""
+    if faster_or_slower > 0 :
+        faster_or_slower_word = "SLOWER"
+    elif faster_or_slower < 0 :
+        faster_or_slower_word = "FASTER"
+    else:
+        faster_or_slower_word = "UNCHANGED"
+    faster_or_slower = abs(faster_or_slower)
+    print(f'Short Summary : ')
+    print(f'{circuit} raced in this circuit from {range_of_years[0]} to {range_of_years[1]}')
+    print(f'They became {faster_or_slower_word} by {faster_or_slower} seconds')
+
+# Create the interactive dropdown
+interact(plot_graph, circuit=widgets.Dropdown(options=circuits))
+print()
+```
+![Oct-18-2023 13-29-42](https://github.com/atnikola/f1-analysis-2023/assets/38530617/402b39f1-4b94-42e3-a9e8-0c1a8d6d2456)
 
 
 
