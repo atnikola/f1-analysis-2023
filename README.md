@@ -1,4 +1,4 @@
-# f1-analysis-2023
+# F1 2023 Analysis
 **Andreas Nikolaidis** 
 
 _October 2023_
